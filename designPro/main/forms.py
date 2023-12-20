@@ -1,17 +1,16 @@
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
 
-from .models import User
+from .models import User, Application, Category
 
 
 class RegisterUserForm(forms.ModelForm):
     email = forms.EmailField(required=True,
                              label='Адрес электронной почты')
     password = forms.CharField(label='Пароль',
-                                widget=forms.PasswordInput,
-                                help_text=password_validation.password_validators_help_text_html())
+                               widget=forms.PasswordInput,
+                               help_text=password_validation.password_validators_help_text_html())
     password2 = forms.CharField(label='Пароль (повторно)',
                                 widget=forms.PasswordInput,
                                 help_text='Повторите тот же самый пароль еще раз')
@@ -36,3 +35,21 @@ class RegisterUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('name', 'surname', 'patronymic', 'username', 'email', 'password', 'password2',)
+
+
+class AddApplication(forms.ModelForm):
+    name = forms.CharField(required=True, label='Название')
+    description = forms.CharField(widget=forms.Textarea(attrs={'rows': 5}), label='Описание')
+    category = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label='Категория не выбрана',
+                                      label='Категория')
+
+    # save(self, commit=True):
+    # application = super().save(commit=False)
+    # if commit:
+    # application.save()
+    # return super(AddApplication, self).save(application)
+
+    class Meta:
+        model = Application
+        fields = ('user', 'name', 'description', 'category')
+        widgets = {'user': forms.HiddenInput}

@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.contrib.auth.models import AbstractUser
 from django.utils.crypto import get_random_string
+from .utilities import get_timestamp_path
 
 
 def get_name_file(instance, filename):
@@ -23,6 +24,14 @@ class User(AbstractUser):
     def __str__(self):
         return str(self.name) + " " + str(self.surname)
 
+    def is_author(self, application):
+        if self.pk == application.user.pk:
+            return True
+        return False
+
+    class Meta(AbstractUser.Meta):
+        pass
+
 
 class Category(models.Model):
     name = models.CharField(max_length=254, verbose_name='Название', blank=False)
@@ -35,19 +44,19 @@ class Application(models.Model):
     name = models.CharField(max_length=254, verbose_name='Имя', blank=False)
     description = models.CharField(max_length=500, verbose_name='Описание', blank=False)
     category = models.ForeignKey(Category, verbose_name='Категория', on_delete=models.CASCADE)
-    photo_file = models.ImageField(max_length=254, upload_to=get_name_file,
+    photo_file = models.ImageField(max_length=254, upload_to=get_timestamp_path,
                                    blank=True, null=True,
                                    validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])])
-    date = models.DateTimeField(verbose_name='Дата добавления', auto_now_add=True)
+    date = models.DateTimeField(verbose_name='Дата добавления', auto_now_add=True, blank=False)
 
     LOAN_STATUS = (
-        ('', 'Новая'),
-        ('', 'Принято в работу'),
-        ('', 'Выполнено'),
+        ('n', 'Новая'),
+        ('p', 'Принято в работу'),
+        ('d', 'Выполнено'),
     )
 
-    status = models.CharField(max_length=1, verbose_name='Дата добавления',
-                              choices=LOAN_STATUS, blank=True, default='')
+    status = models.CharField(max_length=1, verbose_name='Cтатус',
+                              choices=LOAN_STATUS, blank=True, default='n')
     status_comment = models.CharField(max_length=500, verbose_name='Комментарий изменений', blank=True, null=True)
     user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
 

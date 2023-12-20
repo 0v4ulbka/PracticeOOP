@@ -1,0 +1,38 @@
+{% extends "layout/basic.html" %}
+{% load bootstrap4 %}
+{% block title %} Личный кабинет {% endblock %}
+{% block content %}
+
+<h2>Профиль пользователя {{ user.username }}</h2>
+{% if user.name and user.surname %}
+<p>Здравствуйте, {{ user.name }} {{ user.surname }} </p>
+{% else %}
+<p>Здравствуйте! </p>
+{% endif %}
+<h4>Заявки:</h4>
+<a class="btn btn-outline-success" href="{% url 'main:application_create' %}">Добавить новую</a>
+{% if application_list %}
+{% for application in application_list %}
+<div class="application_card">
+    <div class="application_one">
+        <div class="application_content">
+            <h5 class="application_name">{{ application.name }}</h5>
+            <p>{{ application.description }}</p>
+            <div class="application_info">
+                <p>Статус: <br>{{ application.status }}</p>
+                <p>Дата добавления: <br>{{ application.date }}</p>
+            </div>
+        </div>
+        {% if application.photo_file %}
+        <div class="photo_name_application">
+            <img src="../media/thumbnails/{{ application.photo_file }}" alt="">
+        </div>
+        {% endif %}
+    </div>
+    {% if application.status == 'n' %}
+    <a class="btn btn-danger btn-sm" href="{% url 'main:application_delete' application.pk %}">Удалить</a>
+    {% endif %}
+</div>
+{% endfor %}
+{% endif %}
+{% endblock %}

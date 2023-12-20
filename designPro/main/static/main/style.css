@@ -1,0 +1,35 @@
+.div_buttons{
+    display: flex;
+    height: 38px;
+    width: 200px;
+    justify-content: space-between;
+}
+
+.application_name{
+    font-weight: bold;
+}
+
+.application_info{
+    width:100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.photo_name_application{
+    width:50%x;
+    height: 250px;
+}
+
+.application_one{
+    display: flex;
+    width: 50%;
+}
+
+.application_content{
+    margin: auto;
+}
+
+.application_card{
+    margin-top: 40px;
+    padding: 20px 15px;
+}
