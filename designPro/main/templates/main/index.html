@@ -1,6 +1,27 @@
 {% extends "layout/basic.html" %}
-
-
+{% load bootstrap4 %}
+{% block title %} Главная {% endblock %}
 {% block content %}
-  <h2>Последние 4 заявки</h2>
+<p>Количество заявок, принятых в работу на нашем сайте: {{ in_progress }}</p>
+<h2>Последние 4 выполненные заявки</h2>
+{% for application in done %}
+{% if forloop.counter <= 4 %}
+<div class="application_card">
+    <div class="application_one">
+        <div class="application_content">
+            <h5 class="application_name">{{ application.name }}</h5>
+            <p>Категория: {{ application.category }}</p>
+            <div class="application_info">
+                <p>Дата добавления: <br>{{ application.date }}</p>
+            </div>
+        </div>
+        {% if application.photo_file %}
+        <div class="photo_name_application">
+            <img class="photo_file" src="../../media/{{ application.photo_file }}" alt="">
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endfor %}
 {% endblock %}

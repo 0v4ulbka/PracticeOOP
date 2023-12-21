@@ -10,26 +10,40 @@
 }
 
 .application_info{
-    width:100%;
     display: flex;
     justify-content: space-between;
 }
 
 .photo_name_application{
-    width:50%x;
-    height: 250px;
+    width:45%;
 }
 
 .application_one{
     display: flex;
-    width: 50%;
+    justify-content: space-between;
 }
 
 .application_content{
-    margin: auto;
+    width: 45%;
 }
 
 .application_card{
     margin-top: 40px;
     padding: 20px 15px;
+    border: #1E90FF 1px solid;
+    border-radius: 15px;
+        background-color: #E0FFFF;
+}
+
+.photo_file{
+    max-width:100%
+}
+
+.filter{
+    margin:40px 0px
+}
+
+.col-form-label{
+    font-weight:bold;
+    font-size: large;
 }

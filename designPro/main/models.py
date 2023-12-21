@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.contrib.auth.models import AbstractUser
@@ -7,6 +8,13 @@ from .utilities import get_timestamp_path
 
 def get_name_file(instance, filename):
     return '/'.join([get_random_string(length=5) + '_' + filename])
+
+
+def validate_image(field_file_obj):
+    filesize = field_file_obj.file.size
+    megabyte_limit = 2.0
+    if filesize > megabyte_limit * 1024 * 1024:
+        raise ValidationError("Максимальный размер файла %sMB" % str(megabyte_limit))
 
 
 class User(AbstractUser):
@@ -44,9 +52,9 @@ class Application(models.Model):
     name = models.CharField(max_length=254, verbose_name='Имя', blank=False)
     description = models.CharField(max_length=500, verbose_name='Описание', blank=False)
     category = models.ForeignKey(Category, verbose_name='Категория', on_delete=models.CASCADE)
-    photo_file = models.ImageField(max_length=254, upload_to=get_timestamp_path,
-                                   blank=True, null=True,
-                                   validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg'])])
+    photo_file = models.ImageField(max_length=254, upload_to=get_timestamp_path, blank=True,
+                                   validators=[FileExtensionValidator(allowed_extensions=['png', 'jpg', 'jpeg']),
+                                               validate_image], help_text='Максимальный размер изображения 2МБ')
     date = models.DateTimeField(verbose_name='Дата добавления', auto_now_add=True, blank=False)
 
     LOAN_STATUS = (
@@ -58,7 +66,7 @@ class Application(models.Model):
     status = models.CharField(max_length=1, verbose_name='Cтатус',
                               choices=LOAN_STATUS, blank=True, default='n')
     status_comment = models.CharField(max_length=500, verbose_name='Комментарий изменений', blank=True, null=True)
-    user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE, default=1)
 
     def __str__(self):
         return self.name

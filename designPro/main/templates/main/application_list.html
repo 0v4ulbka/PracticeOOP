@@ -3,36 +3,63 @@
 {% block title %} Личный кабинет {% endblock %}
 {% block content %}
 
-<h2>Профиль пользователя {{ user.username }}</h2>
-{% if user.name and user.surname %}
-<p>Здравствуйте, {{ user.name }} {{ user.surname }} </p>
+{% if user.is_superuser %}
+<h2>Здравствуйте, {{ user.username }}</h2>
+<p>Вы можете перейти на страницу категорий для их управления</p>
+<a class="btn btn-outline-success" href="{% url 'main:category' %}">Категории</a>
+<br><br><p>А также изменить статусы заявок</p>
 {% else %}
-<p>Здравствуйте! </p>
-{% endif %}
-<h4>Заявки:</h4>
+<h2>Профиль пользователя {{ user.username }}</h2>
+<p>Здравствуйте, {{ user.name }} {{ user.surname }} </p>
+<h4>Мои заявки:</h4>
 <a class="btn btn-outline-success" href="{% url 'main:application_create' %}">Добавить новую</a>
+{% endif %}
+
+<form method="GET" class="filter">
+    {% bootstrap_form filter.form layout='horizontal' %}
+    <button class="btn btn-success btn-sm" type="submit">Показать</button>
+</form>
+
 {% if application_list %}
-{% for application in application_list %}
+{% for application in filter.qs %}
 <div class="application_card">
     <div class="application_one">
         <div class="application_content">
             <h5 class="application_name">{{ application.name }}</h5>
             <p>{{ application.description }}</p>
+            <p>Категория: {{ application.category }}</p>
             <div class="application_info">
-                <p>Статус: <br>{{ application.status }}</p>
+                {% if application.status == 'n' %}
+                <p>Статус: <br>Новая</p>
+                {% elif application.status == 'p' %}
+                <p>Статус: <br>Принято в работу</p>
+                {% elif application.status == 'd' %}
+                <p>Статус: <br>Выполнено</p>
+                {% endif %}
                 <p>Дата добавления: <br>{{ application.date }}</p>
             </div>
+            {% if application.status_comment %}
+            <div>
+                <p>Комментарий: <br>{{ application.status_comment }}</p>
+            </div>
+            {% endif %}
         </div>
         {% if application.photo_file %}
         <div class="photo_name_application">
-            <img src="../media/thumbnails/{{ application.photo_file }}" alt="">
+            <img class="photo_file" src="../../media/{{ application.photo_file }}" alt="">
         </div>
         {% endif %}
     </div>
-    {% if application.status == 'n' %}
+    {% if user.is_superuser and application.status == 'n' %}
+    <a class="btn btn-warning btn-sm" href="{% url 'main:status_update' application.pk 'p' %}">Статус - принято в
+        работу</a>
+    <a class="btn btn-warning btn-sm" href="{% url 'main:status_update' application.pk 'd' %}">Статус - выполнено</a>
+    {% elif application.status == 'n' %}
     <a class="btn btn-danger btn-sm" href="{% url 'main:application_delete' application.pk %}">Удалить</a>
     {% endif %}
 </div>
 {% endfor %}
+{% else %}
+<p>На данный момент у вас нет заявок, но вы можете их добавить!</p>
 {% endif %}
 {% endblock %}

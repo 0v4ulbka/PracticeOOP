@@ -1,0 +1,19 @@
+{% extends "layout/basic.html" %}
+{% load bootstrap4 %}
+{% block title %} Изменение статуса {% endblock %}
+{% block content %}
+
+<div class="content-section">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Изменение статуса заявки</legend>
+            {% bootstrap_form form layout='horizontal' %}
+        </fieldset>
+        <div class="div_buttons">
+            {% buttons submit='Добавить' %} {% endbuttons %}
+            <a class="btn btn-outline-secondary" href="{% url 'main:profile' %}">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock content %}

@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'main.apps.MainConfig',
     'django_cleanup',
     'easy_thumbnails',
+    'django_filters',
+    'django_forms_bootstrap'
 ]
 
 MIDDLEWARE = [

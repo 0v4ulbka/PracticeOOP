@@ -1,0 +1,20 @@
+{% extends "layout/basic.html" %}
+{% load bootstrap4 %}
+{% block title %} Категории {% endblock %}
+{% block content %}
+
+<h2>Список доступных категорий</h2>
+<p>Вы можете добавлять и удалять категории</p>
+<a class="btn btn-outline-success" href="{% url 'main:category_create' %}">Добавить новую</a>
+<a class="btn btn-outline-secondary" href="{% url 'main:profile' %}">Назад</a>
+{% if category_list %}
+{% for category in category_list %}
+<div class="application_card">
+    <div class="application_content">
+        <h5 class="application_name">{{ category.name }}</h5>
+    </div>
+    <a class="btn btn-danger btn-sm" href="{% url 'main:category_delete' category.pk %}">Удалить</a>
+</div>
+{% endfor %}
+{% endif %}
+{% endblock %}

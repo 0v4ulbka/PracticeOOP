@@ -1,0 +1,15 @@
+{% extends "layout/basic.html" %}
+{% load bootstrap4 %}
+{% block title %} Удаление заявки {% endblock %}
+{% block content %}
+
+<div>
+    <form method="POST">
+        {% csrf_token %}
+        <p>Вы уверены, что хотите удалить категорию <b>{{ category.name }}</b>?</p>
+        {% buttons submit='Да' %} {% endbuttons %}
+        <a class="btn btn-outline-primary" href="{% url 'main:profile' %}">Нет</a>
+    </form>
+</div>
+
+{% endblock %}
